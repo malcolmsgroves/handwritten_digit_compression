@@ -63,6 +63,7 @@ void GA::runGA() {
             best_generation = i+1;
         }
         
+        // perform selection
         switch(selection_type) {
             case TOURNAMENT: tournament_selection() break;
             case BOLTZMANN: boltzmann_selection() break;
@@ -185,10 +186,11 @@ void GA::fitness() {
 
 
 void GA::boltzmann_selection() {
+    
     breeding_population.clear();
     vector<long double> boltzmann_weights;  //declare size equal to popultion size
     long double boltzmann_sum = 0;
-    ;
+    
     
     for (int i = 0; i < population_size; ++i) {
         long double k = expl(population[i].number_satisfied);
