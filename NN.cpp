@@ -4,14 +4,19 @@ using namespace std;
 
 
 // constructor with initializer list and weight initialization
-NN::NN(double learningRate, Problem train_prob, Problem test_prob, int numOutputs, int maxEpochs):
-num_train_inputs(train_prob.num_inputs), num_test_inputs(test_prob.num_inputs),
-num_outputs(numOutputs), map_size(train_prob.map_size),
-learning_rate(learningRate), train_inputs(train_prob.inputs),
-test_inputs(test_prob.inputs), train_targets(train_prob.targets),
-test_targets(test_prob.targets), max_epochs(maxEpochs) {
-    
-    
+NN::NN(double learningRate, Problem train_prob, Problem test_prob, int numOutputs, int maxEpochs, vector<int> compressionVector):
+num_train_inputs(train_prob.num_inputs),
+num_test_inputs(test_prob.num_inputs),
+num_outputs(numOutputs),
+map_size(train_prob.map_size),
+learning_rate(learningRate),
+train_inputs(train_prob.inputs),
+test_inputs(test_prob.inputs),
+train_targets(train_prob.targets),
+test_targets(test_prob.targets),
+max_epochs(maxEpochs),
+compression_vector(compressionVector)
+{
     initialize_weights();
 }
 
@@ -56,7 +61,7 @@ void NN::clear() {
  Return: A vector of the % test problems correct
  every epoch.
  */
-vector<double> NN::train() {
+void NN::train() {
     
     vector<double> percent_correct;
     
@@ -95,10 +100,7 @@ vector<double> NN::train() {
             }
         } // every training input
         
-        percent_correct.push_back(test());  // record performance
-        
     } // every epoch
-    return percent_correct;
 }
 
 

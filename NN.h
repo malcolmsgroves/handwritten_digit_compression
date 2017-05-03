@@ -21,11 +21,13 @@ struct Problem {
     
 };
 
+
+
 class NN {
 public:
-    NN(double learningRate, Problem train_prob, Problem test_prob, int numOutputs, int maxEpochs);
+    NN(double learningRate, Problem train_prob, Problem test_prob, int numOutputs, int maxEpochs, vector<int> compressionVector);
     double test();
-    vector<double> train();
+    void train();
     void clear();
     
 private:
@@ -33,14 +35,15 @@ private:
     int num_test_inputs;
     int num_outputs;
     int map_size;
-    
+    int max_epochs;
     double learning_rate;
+    
     vector<vector<int>> train_inputs;
     vector<vector<int>> test_inputs;
     vector<int> train_targets;
     vector<int> test_targets;
     vector<output> outputs;
-    int max_epochs;
+    
     
     void initialize_weights();
     void update_weights(int output_index, int input_index, double g, double g_prime, double target);
