@@ -14,5 +14,6 @@ nn.o : NN.cpp NN.h
 	$(CC) -c $(CFLAGS) NN.cpp -o $@
 
 clean:
-	rm RK
 	rm *.o
+	rm RK
+
