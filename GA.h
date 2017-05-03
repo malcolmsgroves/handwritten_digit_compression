@@ -4,23 +4,37 @@
 #include "Individual.h"
 #include <vector>
 #include <string>
-//#include "rtimer.h"
+
+#include "NN.h"
 
 using namespace std;
 
+enum SelectionType {TOURNAMENT, RANK, BOLTZMANN};
+enum CrossoverType {UNIFORM, ONEPOINT};
+
 class GA {
+
 public:
-    GA(int populationSize, string selectionType, string crossoverType, double crossoverProbability, double mutationProbability, int generationNumber, vector <vector <int> > allClauses, int numVariables);
+    GA(int populationSize,
+       string selectionType,
+       string crossoverType,
+       double crossoverProbability,
+       double mutationProbability,
+       int generationNumber,
+       vector <vector <int> > allClauses,
+       int numVariables);
+    
     void runGA();
     
 private:
-    //individual best_individual;
+    
     vector <vector <int> > clauses;
     vector <individual> population;
     vector <individual> breeding_population;
     double crossover_probability, mutation_probability, start_time, end_time;
     int generations, population_size, num_clauses, num_variables, best_generation;
-    string selection_type, crossover_type;
+    CrossoverType crossover_type;
+    SelectionType selection_type;
     void fitness();
     
     void boltzmann_selection();

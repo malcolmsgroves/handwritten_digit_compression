@@ -9,54 +9,78 @@
 
 using namespace std;
 
-GA::GA(int populationSize, string selectionType, string crossoverType, double crossoverProbability, double mutationProbability, int generationNumber, vector <vector <int> > allClauses, int numVariables) {
-    this->population_size = populationSize;
-    this->selection_type = selectionType;
-    this->crossover_type = crossoverType;
-    this->crossover_probability = crossoverProbability;
-    this->mutation_probability = mutationProbability;
-    this->generations = generationNumber;
-    this->clauses = allClauses;
+// GA constructor with initializer list
+GA::GA(int populationSize, string selectionType, string crossoverType, double crossoverProbability, double mutationProbability, int generationNumber, vector <vector <int> > allClauses, int numVariables) :
+population_size(populationSize),
+selection_type(selectionType),
+crossover_probability(crossoverProbability),
+mutation_probability(mutationProbability),
+generations(generationNumber),
+clauses(allClauses),
+num_variables(numVariables),
+best_generation(0)
+{
     this->num_clauses = clauses.size();
-    this->num_variables = numVariables;
     this->population = generate_initial_population();
-    this->best_generation = 0;
+    
+    if(selectionType == "ts" ) {
+        this->selection_type = TOURNAMENT;
+    } else if(selection_type == "bs") {
+        this->selection_type = BOLTZMANN;
+    } else if(selection_type == "rs") {
+        this->selection_type = RANK;
+    } else {
+        cout << "Selection type not recognized" << endl;
+    }
+    
+    if(crossoverType == "uc") {
+        this->crossover_type = UNIFORM;
+    } else if(crossoverType == "1c") {
+        this->crossover_type = ONEPOINT;
+    } else {
+        cout << "Crossover type not recognized" << endl;
+    }
+    
 }
 
-//add file name in main
-//format print answer
-//add best_individual to class. This throws abort trap 6. ew
 
 void GA::runGA() {
+    
     start_time = clock();
-    srand(time(NULL));
+    srand(clock());
+    
     individual best_overall_individual = population[0];
     individual best_after_update;
+    
     for(int i = 0; i < generations; i++) {
-        fitness();
+        
+        fitness();  // evaluate fitness of population
         best_after_update = get_best();
+        
+        // for measuring which generation produce the best individual
         if(best_after_update.number_satisfied > best_overall_individual.number_satisfied) {
             best_overall_individual = best_after_update;
             best_generation = i+1;
         }
-        if(selection_type == "ts" ) {
-            tournament_selection();
-        } else if(selection_type == "bs") {
-            boltzmann_selection();
-        } else if(selection_type == "rs") {
-            rank_selection();
+        
+        switch(selection_type) {
+            case TOURNAMENT: tournament_selection() break;
+            case BOLTZMANN: boltzmann_selection() break;
+            case RANK: rank_selection() break;
         }
         
         for(int j = 0; j < population_size-1; j++) { //size of breeding population
             individual ind;
             
-            if(crossover_type == "uc") {
-                ind = uniform_crossover(breeding_population[2*j],
-                                        breeding_population[2*j+1]);
-            }
-            else if(crossover_type == "1c") {
-                ind = one_point_crossover(breeding_population[2*j],
-                                          breeding_population[2*j+1]);
+            switch(crossover_type) {
+                case UNIFORM:
+                    ind = uniform_crossover(breeding_population[2*j],
+                                            breeding_population[2*j+1]);
+                    break;
+                case ONEPOINT:
+                    ind = one_point_crossover(breeding_population[2*j],
+                                              breeding_population[2*j+1]);
+                    break;
             }
             
             population[j] = ind;
