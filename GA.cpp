@@ -34,7 +34,7 @@ num_symbols(numSymbols)
   } else {
     cout << "Selection type not recognized" << endl;
   }
-  
+
   if(crossoverType == "uc") {
     this->crossover_type = UNIFORM;
   } else if(crossoverType == "1c") {
@@ -42,18 +42,18 @@ num_symbols(numSymbols)
   } else {
     cout << "Crossover type not recognized" << endl;
   }
-  
+
 }
 
 
 void GA::runGA() {
-  
+
   start_time = clock();
   srand(clock());
-  
+
   Individual best_overall_individual = population[0];
   Individual best_after_update;
-  
+
   for(int i = 0; i < generations; i++) {
     cout << "0" << endl;
     fitness();  // evaluate fitness of population
@@ -68,20 +68,20 @@ void GA::runGA() {
     cout << "3" << endl;
     // perform selection
     switch(selection_type) {
-    case TOURNAMENT: 
+    case TOURNAMENT:
       tournament_selection();
       break;
-    case BOLTZMANN: 
+    case BOLTZMANN:
       boltzmann_selection();
       break;
-    case RANK: 
-      rank_selection(); 
+    case RANK:
+      rank_selection();
       break;
     }
-    
+
     for(int j = 0; j < population_size-1; j++) { //size of breeding population
       Individual ind;
-      
+
       switch(crossover_type) {
       case UNIFORM:
 	ind = uniform_crossover(breeding_population[2*j],
@@ -92,7 +92,7 @@ void GA::runGA() {
 				  breeding_population[2*j+1]);
 	break;
       }
-      
+
       population[j] = ind;
     }//for pop
     mutation();
@@ -125,7 +125,7 @@ void GA::extract_and_print_answer(Individual best_individual) {
     best_individual = ind;
     best_generation = generations;
   }
-  
+
   int num_train_inputs = nn_parameters.test_prob.inputs.size();
   cout << " Number of symbols: " << num_symbols << endl;
   cout << " Number of tests: " << nn_parameters.test_prob.inputs.size() << endl;
@@ -140,7 +140,7 @@ void GA::extract_and_print_answer(Individual best_individual) {
   cout << " Generation where best assignment was found: " << best_generation << endl;
   cout << " Time to solve: " << (end_time-start_time)/CLOCKS_PER_SEC << endl;
   cout << endl;
-    
+
 }
 
 Individual GA::get_best() {
@@ -152,9 +152,9 @@ Individual GA::get_best() {
 }
 
 vector <Individual> GA::generate_initial_population() {
-  
+
   vector<Individual> population; // to return
-    
+
   for(int i = 0; i < population_size; i++) {
     vector<int> compressionVector;
     for(int j = 0; j < map_size+1; j++) { // first bit is trash for easy indexing
@@ -171,17 +171,15 @@ vector <Individual> GA::generate_initial_population() {
 }
 
 void GA::fitness() {
-    
+
   // for every Individual in the population
   for(int i = 0; i < population_size; i++) {
     cout << "i" << endl;
-    NN net(nn_parameters.learning_rate,
-	   nn_parameters.train_prob,
-	   nn_parameters.test_prob,
-	   nn_parameters.num_outputs,
-	   nn_parameters.max_epochs,
+    NN net(nn_parameters.learning_rate, nn_parameters.train_prob,
+	   nn_parameters.test_prob, nn_parameters.num_outputs,
+	   nn_parameters.max_epochs, num_symbols,
 	   population[i].compression_vector);
-        
+
     net.train();
     population[i].number_correct = net.test();
     cout << population[i].number_correct << endl;
@@ -190,12 +188,12 @@ void GA::fitness() {
 
 
 void GA::boltzmann_selection() {
-    
+
   breeding_population.clear();
   vector<long double> boltzmann_weights;  //declare size equal to popultion size
   long double boltzmann_sum = 0;  // DISCRETE DISTRUBTION RANDOM GENERATOR
-    
-    
+
+
   for (int i = 0; i < population_size; ++i) {
     long double k = expl(population[i].number_correct);
     boltzmann_weights.push_back(k);
@@ -209,7 +207,7 @@ void GA::boltzmann_selection() {
     while(random_weight > 0) {
       random_weight -= boltzmann_weights[boltzmann_index];
       boltzmann_index++;
-            
+
     }
     boltzmann_index--;  //because we went one past
     breeding_population.push_back(population[boltzmann_index]);
@@ -219,12 +217,12 @@ void GA::boltzmann_selection() {
 
 void GA::tournament_selection() {
   breeding_population.clear();
-    
+
   int first_random_index;
   int second_random_index;
-    
+
   for(int i = 0; i < population_size*2; ++i) {
-        
+
     // get two random indices
     first_random_index = rand() % (population_size-1);
     second_random_index = rand() % (population_size-1);
@@ -251,7 +249,7 @@ void GA::rank_selection() {
   // sorts the population in ascending order
   sort(population.begin(), population.end(), compare_individual_satisfication);
   int gaussian_sum = population_size * (population_size + 1) / 2;
-    
+
   // weight probabilities by index from least
   for(int i = 0; i < population_size * 2; ++i) {
     int random_number;
@@ -278,13 +276,13 @@ void GA::mutation() {
 }
 
 Individual GA::one_point_crossover(Individual parent_a, Individual parent_b) {
-    
+
   // for crossover probability
   double random_number = double(rand()) / RAND_MAX;
-    
+
   Individual new_Individual;
   new_Individual.number_correct = -1;
-    
+
   // crossover
   if(random_number < crossover_probability) {
     int random_index;
