@@ -23,7 +23,6 @@ nn_parameters(nnParameters),
 map_size(nnParameters.train_prob.inputs.size()),
 num_symbols(numSymbols)
 {
-  cout << "b" << endl;
   this->population = generate_initial_population();
 
   if(selectionType == "ts" ) {
@@ -35,7 +34,7 @@ num_symbols(numSymbols)
   } else {
     cout << "Selection type not recognized" << endl;
   }
-  cout << "d" << endl;
+  
   if(crossoverType == "uc") {
     this->crossover_type = UNIFORM;
   } else if(crossoverType == "1c") {
@@ -43,7 +42,7 @@ num_symbols(numSymbols)
   } else {
     cout << "Crossover type not recognized" << endl;
   }
-  cout << "e" << endl;
+  
 }
 
 
