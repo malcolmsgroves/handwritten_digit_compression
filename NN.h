@@ -37,15 +37,20 @@ private:
     int map_size;
     int max_epochs;
     double learning_rate;
+
     
     vector<vector<int>> train_inputs;
     vector<vector<int>> test_inputs;
+    vector<vector<int>> conpressed_train_inputs;
+    vector<vector<int>> compressed_test_inputs;
     vector<int> train_targets;
     vector<int> test_targets;
     vector<output> outputs;
     vector<int> compression_vector;
     
+    
     void initialize_weights();
+    void compress_maps();
     void update_weights(int output_index, int input_index, double g, double g_prime, double target);
     double activation_function(double x);
     double ddx_activation_function(double x);

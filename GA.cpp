@@ -55,16 +55,17 @@ void GA::runGA() {
   Individual best_after_update;
   
   for(int i = 0; i < generations; i++) {
-    
+    cout << "0" << endl;
     fitness();  // evaluate fitness of population
+    cout << "1" << endl;
     best_after_update = get_best();
-    
+    cout << "2" << endl;
     // for measuring which generation produce the best Individual
     if(best_after_update.number_correct > best_overall_individual.number_correct) {
       best_overall_individual = best_after_update;
       best_generation = i+1;
     }
-    
+    cout << "3" << endl;
     // perform selection
     switch(selection_type) {
     case TOURNAMENT: 
@@ -151,19 +152,19 @@ Individual GA::get_best() {
 }
 
 vector <Individual> GA::generate_initial_population() {
-    
+  
   vector<Individual> population; // to return
     
   for(int i = 0; i < population_size; i++) {
-    vector<int> compression_vector;
+    vector<int> compressionVector;
     for(int j = 0; j < map_size+1; j++) { // first bit is trash for easy indexing
       int random;
       random = rand() % num_symbols;
-      compression_vector.push_back(random);
+      compressionVector.push_back(random);
     }
     Individual ind;
     ind.number_correct = -1;
-    ind.compression_vector = compression_vector;
+    ind.compression_vector = compressionVector;
     population.push_back(ind);
   }
   return population;
@@ -173,6 +174,7 @@ void GA::fitness() {
     
   // for every Individual in the population
   for(int i = 0; i < population_size; i++) {
+    cout << "i" << endl;
     NN net(nn_parameters.learning_rate,
 	   nn_parameters.train_prob,
 	   nn_parameters.test_prob,
@@ -182,6 +184,7 @@ void GA::fitness() {
         
     net.train();
     population[i].number_correct = net.test();
+    cout << population[i].number_correct << endl;
   }//for pop
 }//func
 

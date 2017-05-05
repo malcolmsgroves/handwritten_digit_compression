@@ -17,7 +17,13 @@ test_targets(test_prob.targets),
 max_epochs(maxEpochs),
 compression_vector(compressionVector)
 {
-    initialize_weights();
+  vector<vector<int>> train_zeros (num_train_inputs,vector<int> (num_symbols));
+  compressed_train_inputs = train_zeros;
+  vector<vector<int>> test_zeros (num_test_inputs,vector<int> (num_symbols));
+  compressed_test_inputs = test_zeros;
+
+  initialize_weights();
+  compress_maps();
 }
 
 /*
@@ -41,6 +47,18 @@ void NN::initialize_weights() {
         // add a bias node
         outputs[i].weights.push_back(1);
     }
+}
+
+void NN::compress_maps() {
+ 
+  for(int map = 0; map < num_train_inputs; map++) {
+    for(int bit = 0; bit < map_size; bit++) {
+      if(train_inputs == 1) {
+	int symbol = compression_vector[bit];
+	compressed_train_inputs[map][symbol]++;
+      }
+    }
+  }
 }
 
 
@@ -214,8 +232,8 @@ double NN::test() {
         
         
     }
-    
-    return double (num_correct / double(num_test_inputs));
+    cout << "inputs " << num_test_inputs << endl;
+    return num_correct; 
 }
 
 

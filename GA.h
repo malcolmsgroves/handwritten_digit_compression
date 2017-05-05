@@ -10,7 +10,7 @@
 using namespace std;
 
 struct Individual {
-    int number_correct;
+    double number_correct;
     vector <int> compression_vector;
 };
 
