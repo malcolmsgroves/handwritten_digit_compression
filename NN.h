@@ -43,7 +43,7 @@ private:
     vector<int> train_targets;
     vector<int> test_targets;
     vector<output> outputs;
-    
+    vector<int> compression_vector;
     
     void initialize_weights();
     void update_weights(int output_index, int input_index, double g, double g_prime, double target);

@@ -6,6 +6,7 @@
 #include <random>
 #include <cmath>
 #include <time.h>
+#include <string>
 
 using namespace std;
 
@@ -14,7 +15,7 @@ GA::GA(int populationSize, string selectionType, string crossoverType,
        double crossoverProbability, double mutationProbability,
        int generationNumber, NN_Parameters nnParameters) :
 population_size(populationSize),
-selection_type(selectionType),
+//selection_type(selectionType),
 crossover_probability(crossoverProbability),
 mutation_probability(mutationProbability),
 generations(generationNumber),
@@ -26,9 +27,9 @@ map_size(nnParameters.train_prob.inputs.size())
     
     if(selectionType == "ts" ) {
         this->selection_type = TOURNAMENT;
-    } else if(selection_type == "bs") {
+    } else if(selectionType == "bs") {
         this->selection_type = BOLTZMANN;
-    } else if(selection_type == "rs") {
+    } else if(selectionType == "rs") {
         this->selection_type = RANK;
     } else {
         cout << "Selection type not recognized" << endl;
@@ -66,9 +67,15 @@ void GA::runGA() {
         
         // perform selection
         switch(selection_type) {
-            case TOURNAMENT: tournament_selection() break;
-            case BOLTZMANN: boltzmann_selection() break;
-            case RANK: rank_selection() break;
+	case TOURNAMENT: 
+	  tournament_selection();
+	  break;
+	case BOLTZMANN: 
+	  boltzmann_selection();
+	  break;
+	case RANK: 
+	  rank_selection(); 
+	  break;
         }
         
         for(int j = 0; j < population_size-1; j++) { //size of breeding population
@@ -171,10 +178,10 @@ void GA::fitness() {
                nn_parameters.test_prob,
                nn_parameters.num_outputs,
                nn_parameters.max_epochs,
-               population[j].compression_vector);
+               population[i].compression_vector);
         
         net.train();
-        population[j].number_correct = net.test();
+        population[i].number_correct = net.test();
     }//for pop
 }//func
 
