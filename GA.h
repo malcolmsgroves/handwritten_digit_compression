@@ -34,7 +34,8 @@ public:
        double crossoverProbability,
        double mutationProbability,
        int generationNumber,
-       NN_Parameters nnParameters);
+       NN_Parameters nnParameters,
+       int numSymbols);
     
     void runGA();
     

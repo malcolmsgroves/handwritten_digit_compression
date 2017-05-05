@@ -12,7 +12,8 @@ int main(int argc, char** argv) {
   double crossover_probability = stod(argv[4]);
   double mutation_probability = stod(argv[5]);
   int num_generations = stoi(argv[6]);
-  
+  int num_symbols = stoi(argv[7]);
+
   Problem train;
   Problem test;
   
@@ -27,7 +28,7 @@ int main(int argc, char** argv) {
   cout << "a" << endl;
 
   GA rat_king(population_size,selection_type,crossover_type,
-	      crossover_probability,mutation_probability,num_generations,nn_params);
+	      crossover_probability,mutation_probability,num_generations,nn_params,num_symbols);
 
   return 0;
 

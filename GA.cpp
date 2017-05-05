@@ -13,14 +13,15 @@ using namespace std;
 // GA constructor with initializer list
 GA::GA(int populationSize, string selectionType, string crossoverType,
        double crossoverProbability, double mutationProbability,
-       int generationNumber, NN_Parameters nnParameters) :
+       int generationNumber, NN_Parameters nnParameters, int numSymbols) :
 population_size(populationSize),
 crossover_probability(crossoverProbability),
 mutation_probability(mutationProbability),
 generations(generationNumber),
 best_generation(0),
 nn_parameters(nnParameters),
-map_size(nnParameters.train_prob.inputs.size())
+map_size(nnParameters.train_prob.inputs.size()),
+num_symbols(numSymbols)
 {
   cout << "b" << endl;
   this->population = generate_initial_population();
