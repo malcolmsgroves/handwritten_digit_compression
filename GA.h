@@ -10,7 +10,7 @@
 using namespace std;
 
 struct Individual {
-    int number_correct;
+    double number_correct;
     vector <int> compression_vector;
 };
 
@@ -34,7 +34,8 @@ public:
        double crossoverProbability,
        double mutationProbability,
        int generationNumber,
-       NN_Parameters nnParameters);
+       NN_Parameters nnParameters,
+       int numSymbols);
     
     void runGA();
     
