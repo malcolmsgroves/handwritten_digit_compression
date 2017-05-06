@@ -64,5 +64,6 @@ private:
     Individual get_best();
     void debug_print();
     void print_Individual(Individual ind);
+    NN net;
 };
 #endif

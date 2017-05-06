@@ -29,7 +29,7 @@ public:
        int numOutputs, int maxEpochs, int numSymbols, vector<int> compressionVector);
     double test();
     void train();
-    void clear();
+    vector<int> compression_vector;
 
 private:
     int num_train_inputs;
@@ -47,9 +47,10 @@ private:
     vector<int> train_targets;
     vector<int> test_targets;
     vector<output> outputs;
-    vector<int> compression_vector;
+    
 
     void initialize_weights();
+    void reset();
     void compress_maps();
     void update_weights(int output_index, int input_index, double g, double g_prime, double target);
     double activation_function(double x);
