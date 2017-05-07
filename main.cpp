@@ -3,7 +3,7 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-  cout << "hello world" << endl;
+  
 
 
   int population_size = stoi(argv[1]);
@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
 
 
   NN_Parameters nn_params;
-  nn_params.learning_rate = .01;
+  nn_params.learning_rate = .1;
   nn_params.train_prob = train;
   nn_params.test_prob = test;
   nn_params.num_outputs = 10;

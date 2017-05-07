@@ -15,8 +15,8 @@ GA::GA(int populationSize, string selectionType, string crossoverType,
        double crossoverProbability, double mutationProbability,
        int generationNumber, int numSymbols, NN_Parameters nnParameters) :
 net(nnParameters.learning_rate, nnParameters.train_prob,
-   nnParameters.test_prob, nnParameters.num_outputs,
-   nnParameters.max_epochs, numSymbols)
+    nnParameters.test_prob, nnParameters.num_outputs,
+    nnParameters.max_epochs, numSymbols)
 {
     this->population_size = populationSize;
     this->crossover_probability = crossoverProbability;
@@ -58,17 +58,18 @@ void GA::runGA() {
     Individual best_after_update;
     
     for(int i = 0; i < generations; i++) {
-        cout << "0" << endl;
+        //cout << "0" << endl;
         fitness();  // evaluate fitness of population
-        cout << "1" << endl;
+        //cout << "1" << endl;
         best_after_update = get_best();
-        cout << "2" << endl;
+        cout << best_after_update.number_correct << endl;
+        //cout << "2" << endl;
         // for measuring which generation produce the best Individual
         if(best_after_update.number_correct > best_overall_individual.number_correct) {
             best_overall_individual = best_after_update;
             best_generation = i+1;
         }
-        cout << "3" << endl;
+        //cout << "3" << endl;
         // perform selection
         switch(selection_type) {
             case TOURNAMENT:
@@ -97,6 +98,7 @@ void GA::runGA() {
             }
             
             population[j] = ind;
+            
         }//for pop
         mutation();
     }//for gen
@@ -115,7 +117,7 @@ void GA::debug_print() {
     }
 }
 
-void GA::print_Individual(Individual ind) {
+void GA::print_individual(Individual ind) {
     for(int i = 1; i <= map_size; i++) {
         cout << ind.compression_vector[i] << " ";
     }
@@ -177,11 +179,13 @@ void GA::fitness() {
     
     // for every Individual in the population
     for(int i = 0; i < population_size; i++) {
-        cout << "i" << endl;
+        
+        
         net.compression_vector = population[i].compression_vector;
+        
         net.train();
+        
         population[i].number_correct = net.test();
-        cout << population[i].number_correct << endl;
     }//for pop
 }//func
 
@@ -267,7 +271,7 @@ void GA::mutation() {
             double random; // = distribution(generator);
             random = double(rand())/RAND_MAX;
             if(random <= mutation_probability) { // if rand is less than prob[0,1]
-                int random_symbol = rand() / num_symbols;
+                int random_symbol = rand() % num_symbols;
                 population[i].compression_vector[j] = random_symbol;
             }
         }

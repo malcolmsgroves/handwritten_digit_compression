@@ -65,7 +65,7 @@ private:
     void extract_and_print_answer(Individual best_individual);
     Individual get_best();
     void debug_print();
-    void print_Individual(Individual ind);
+    void print_individual(Individual ind);
     NN net;
 };
 #endif

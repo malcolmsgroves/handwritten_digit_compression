@@ -37,7 +37,7 @@ void NN::initialize_weights() {
         
         output o;
         outputs.push_back(o);
-        for(int j = 0; j < map_size; j++) {
+        for(int j = 0; j < num_symbols; j++) {
             
             // determined that a [-0.15, 0.15] random range
             // worked well in project 4
@@ -55,6 +55,7 @@ void NN::compress_maps() {
     for(int map = 0; map < num_train_inputs; map++) {
         for(int bit = 0; bit < map_size; bit++) {
             if(train_inputs[map][bit] == 1) {
+                
                 int symbol = compression_vector[bit];
                 compressed_train_inputs[map][symbol]++;
             }
@@ -72,15 +73,17 @@ void NN::compress_maps() {
  */
 
 void NN::reset() {
+    
     outputs.clear();
+    
     initialize_weights();
+    
     for(int map = 0; map < num_train_inputs; map++) {
-        for(int bit = 0; bit < map_size; bit++) {
-            int symbol = compression_vector[bit];
+        for(int symbol = 0; symbol < num_symbols; symbol++) {
             compressed_train_inputs[map][symbol] = 0;
-        
         }
     }
+    compress_maps();
 }
 
 /*
@@ -90,10 +93,10 @@ void NN::reset() {
  */
 void NN::train() {
     
-    reset();
-    compress_maps();
     
-    vector<double> percent_correct;
+    reset();
+    
+    
     
     // for every epoch
     for(int i = 0; i < max_epochs; i++) {
@@ -108,9 +111,10 @@ void NN::train() {
                 
                 double dot_product = 0;
                 
-                for(int weight_index = 0; weight_index <= map_size; weight_index++) {
-                    if(weight_index < map_size) {
-                        dot_product += train_inputs[input][weight_index]*outputs[output].weights[weight_index];
+                
+                for(int weight_index = 0; weight_index <= num_symbols; weight_index++) {
+                    if(weight_index < num_symbols) {
+                        dot_product += compressed_train_inputs[input][weight_index]*outputs[output].weights[weight_index];
                     }
                     else {
                         // bias node
@@ -119,13 +123,14 @@ void NN::train() {
                     }
                 } // every node weight
                 
+                
+                
                 // calculate activation function and derivative
                 double g = activation_function(dot_product);
                 double g_prime = ddx_activation_function(dot_product);
                 
                 // update weights
                 update_weights(output, input, g, g_prime, target);
-                
                 
             }
         } // every training input
@@ -153,10 +158,10 @@ void NN::update_weights(int output_index, int input_index, double g, double g_pr
     }
     
     // update every weight on output node
-    for(int i = 0; i < map_size+1; i++) {
+    for(int i = 0; i < num_symbols+1; i++) {
         if(i < map_size) {
             // update function
-            outputs[output_index].weights[i] += learning_rate * (target - g) * g_prime * train_inputs[input_index][i];
+            outputs[output_index].weights[i] += learning_rate * (target - g) * g_prime * compressed_train_inputs[input_index][i];
         }
         else {
             // bias node
@@ -204,11 +209,11 @@ double NN::test() {
             double dot_product = 0;
             
             // for every weight connected to the output
-            for(int weight_index = 0; weight_index <= map_size; weight_index++) {
+            for(int weight_index = 0; weight_index <= num_symbols; weight_index++) {
                 
                 // real inputs
-                if(weight_index < map_size) {
-                    dot_product += test_inputs[input][weight_index]*outputs[output].weights[weight_index];
+                if(weight_index < num_symbols) {
+                    dot_product += compressed_test_inputs[input][weight_index]*outputs[output].weights[weight_index];
                 }
                 //bias node
                 else {
@@ -244,6 +249,6 @@ double NN::test() {
         
         
     }
-    cout << "inputs " << num_test_inputs << endl;
+
     return num_correct;
 }
