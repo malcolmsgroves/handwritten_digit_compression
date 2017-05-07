@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
 
   GA rat_king(population_size, selection_type, crossover_type,
 	      crossover_probability, mutation_probability,
-	      num_generations, nn_params, num_symbols);
+	      num_generations, num_symbols, nn_params);
 
   rat_king.runGA();
 
