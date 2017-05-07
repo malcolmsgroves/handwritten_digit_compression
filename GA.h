@@ -25,8 +25,8 @@ struct NN_Parameters {
 enum SelectionType {TOURNAMENT, RANK, BOLTZMANN};
 enum CrossoverType {UNIFORM, ONEPOINT};
 
-class GA {
-
+class GA  {
+    
 public:
     GA(int populationSize,
        string selectionType,
@@ -34,19 +34,21 @@ public:
        double crossoverProbability,
        double mutationProbability,
        int generationNumber,
-       NN_Parameters nnParameters,
-       int numSymbols);
+       int numSymbols,
+       NN_Parameters nnParameters);
+    
+    
     
     void runGA();
     
 private:
     
-    vector <vector <int> > clauses;
+    
     vector <Individual> population;
     vector <Individual> breeding_population;
     double crossover_probability, mutation_probability, start_time, end_time;
-    int generations, population_size, num_clauses;
-    int num_variables, best_generation, num_symbols, map_size;
+    int generations, population_size;
+    int best_generation, num_symbols, map_size;
     CrossoverType crossover_type;
     SelectionType selection_type;
     NN_Parameters nn_parameters;

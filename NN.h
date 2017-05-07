@@ -26,7 +26,7 @@ struct Problem {
 class NN {
 public:
     NN(double learningRate, Problem train_prob, Problem test_prob,
-       int numOutputs, int maxEpochs, int numSymbols, vector<int> compressionVector);
+       int numOutputs, int maxEpochs, int numSymbols);
     double test();
     void train();
     vector<int> compression_vector;

@@ -13,16 +13,20 @@ using namespace std;
 // GA constructor with initializer list
 GA::GA(int populationSize, string selectionType, string crossoverType,
        double crossoverProbability, double mutationProbability,
-       int generationNumber, NN_Parameters nnParameters, int numSymbols) :
-population_size(populationSize),
-crossover_probability(crossoverProbability),
-mutation_probability(mutationProbability),
-generations(generationNumber),
-best_generation(0),
-nn_parameters(nnParameters),
-map_size(nnParameters.train_prob.inputs.size()),
-num_symbols(numSymbols)
+       int generationNumber, int numSymbols, NN_Parameters nnParameters) :
+net(nnParameters.learning_rate, nnParameters.train_prob,
+   nnParameters.test_prob, nnParameters.num_outputs,
+   nnParameters.max_epochs, numSymbols)
 {
+    this->population_size = populationSize;
+    this->crossover_probability = crossoverProbability;
+    this->mutation_probability = mutationProbability;
+    this->generations = generationNumber;
+    this->best_generation = 0;
+    this->map_size = nnParameters.train_prob.inputs.size();
+    this->num_symbols = numSymbols;
+    this->nn_parameters = nnParameters;
+    
     this->population = generate_initial_population();
     
     if(selectionType == "ts" ) {
@@ -42,13 +46,6 @@ num_symbols(numSymbols)
     } else {
         cout << "Crossover type not recognized" << endl;
     }
-    vector<int> dummy_vector (num_symbols, 1);
-    
-    NN dummy_net(nn_parameters.learning_rate, nn_parameters.train_prob,
-           nn_parameters.test_prob, nn_parameters.num_outputs,
-           nn_parameters.max_epochs, num_symbols,
-           dummy_vector);
-    this->net = dummy_net;
 }
 
 

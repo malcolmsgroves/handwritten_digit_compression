@@ -5,21 +5,21 @@ using namespace std;
 
 // constructor with initializer list and weight initialization
 NN::NN(double learningRate, Problem train_prob, Problem test_prob,
-       int numOutputs, int maxEpochs, int numSymbols,
-       vector<int> compressionVector):
-num_train_inputs(train_prob.num_inputs),
-num_test_inputs(test_prob.num_inputs),
-num_outputs(numOutputs),
-map_size(train_prob.map_size),
-learning_rate(learningRate),
-train_inputs(train_prob.inputs),
-test_inputs(test_prob.inputs),
-train_targets(train_prob.targets),
-test_targets(test_prob.targets),
-max_epochs(maxEpochs),
-num_symbols(numSymbols),
-compression_vector(compressionVector)
+       int numOutputs, int maxEpochs, int numSymbols)
 {
+    this->num_train_inputs = train_prob.num_inputs;
+    this->num_test_inputs = test_prob.num_inputs;
+    this->num_outputs = numOutputs;
+    this->map_size = train_prob.map_size;
+    this->learning_rate = learningRate;
+    this->train_inputs = train_prob.inputs;
+    this->test_inputs = test_prob.inputs;
+    this->train_targets = train_prob.targets;
+    this->test_targets = test_prob.targets;
+    this->max_epochs = maxEpochs;
+    this->num_symbols = numSymbols;
+    this->compression_vector = vector<int> (numSymbols, 1);
+    
     vector<vector<int>> train_zeros (num_train_inputs,vector<int> (num_symbols, 0));
     this->compressed_train_inputs = train_zeros;
     vector<vector<int>> test_zeros (num_test_inputs,vector<int> (num_symbols, 0));
@@ -76,6 +76,7 @@ void NN::reset() {
     initialize_weights();
     for(int map = 0; map < num_train_inputs; map++) {
         for(int bit = 0; bit < map_size; bit++) {
+            int symbol = compression_vector[bit];
             compressed_train_inputs[map][symbol] = 0;
         
         }
