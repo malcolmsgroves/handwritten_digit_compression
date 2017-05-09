@@ -52,7 +52,7 @@ net(nnParameters.learning_rate, nnParameters.train_prob,
 void GA::runGA() {
     
     start_time = clock();
-    srand(clock());
+    srand(time(NULL));
     
     Individual best_overall_individual = population[0];
     Individual best_after_update;
@@ -62,7 +62,7 @@ void GA::runGA() {
         fitness();  // evaluate fitness of population
         //cout << "1" << endl;
         best_after_update = get_best();
-        cout << best_after_update.number_correct << endl;
+        cout << endl << "best " <<  best_after_update.number_correct << endl;
         //cout << "2" << endl;
         // for measuring which generation produce the best Individual
         if(best_after_update.number_correct > best_overall_individual.number_correct) {

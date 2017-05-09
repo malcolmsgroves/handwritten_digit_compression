@@ -32,8 +32,8 @@ NN::NN(double learningRate, Problem train_prob, Problem test_prob,
  */
 void NN::initialize_weights() {
 
-    // create all the output nodes
-    cout << endl << "THIS IS THE RANDOM NUMBER" <<  rand() << endl << endl;
+  // create all the output nodes
+   
   for(int i = 0; i < num_outputs; i++) {
         
         output o;
@@ -63,12 +63,13 @@ void NN::compress_maps() {
       if(map < num_test_inputs) {
 	if(test_inputs[map][bit] == 1) {
 	  int symbol = compression_vector[bit];
-	  compressed_train_inputs[map][symbol]++;
+	  compressed_test_inputs[map][symbol]++;
 	}
       }
     }
   }
-
+  //for(int i = 0; i < map_size; i ++) {
+    //cout << 
 }
 
 
