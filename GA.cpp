@@ -56,6 +56,7 @@ void GA::runGA() {
     Individual best_after_update;
 
     for(int i = 0; i < generations; i++) {
+      cout << "Genny " << i  << endl;
         //cout << "0" << endl;
         fitness();  // evaluate fitness of population
 
