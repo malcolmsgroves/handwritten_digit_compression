@@ -26,7 +26,7 @@ enum SelectionType {TOURNAMENT, RANK, BOLTZMANN};
 enum CrossoverType {UNIFORM, ONEPOINT};
 
 class GA  {
-    
+
 public:
     GA(int populationSize,
        string selectionType,
@@ -36,14 +36,12 @@ public:
        int generationNumber,
        int numSymbols,
        NN_Parameters nnParameters);
-    
-    
-    
+
     void runGA();
-    
+
 private:
-    
-    
+
+
     vector <Individual> population;
     vector <Individual> breeding_population;
     double crossover_probability, mutation_probability, start_time, end_time;
@@ -52,14 +50,15 @@ private:
     CrossoverType crossover_type;
     SelectionType selection_type;
     NN_Parameters nn_parameters;
-    
+
     void fitness();
-    
+
     void boltzmann_selection();
     void tournament_selection();
     void rank_selection();
     vector<Individual> generate_initial_population();
     void mutation();
+    void elitism(Individual best_individual);
     Individual one_point_crossover(Individual parent_a, Individual parent_b);
     Individual uniform_crossover(Individual parent_a, Individual parent_b);
     void extract_and_print_answer(Individual best_individual);

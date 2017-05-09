@@ -58,7 +58,12 @@ void GA::runGA() {
     for(int i = 0; i < generations; i++) {
         //cout << "0" << endl;
         fitness();  // evaluate fitness of population
-        //cout << "1" << endl;
+
+	// Re-add the best individual from the last generation (only
+	// do this after there IS a "last generation)
+	if(i > 0) elitism(best_after_update);
+
+	srand(time(NULL)); // re-seed rand, because NN uses a fixed seed
         best_after_update = get_best();
 	print_individual(best_after_update);
         cout << endl << "best " <<  best_after_update.number_correct << endl;
@@ -193,7 +198,6 @@ void GA::fitness() {
 
 
 void GA::boltzmann_selection() {
-
     breeding_population.clear();
     vector<long double> boltzmann_weights;  //declare size equal to popultion size
     long double boltzmann_sum = 0;  // DISCRETE DISTRUBTION RANDOM GENERATOR
@@ -278,6 +282,20 @@ void GA::mutation() {
             }
         }
     }
+}
+
+void GA::elitism(Individual best_individual) {
+  //find the weakest individual to replace with our elite individual
+  int index_weakest = 0;
+  for(int i = 0; i < population_size; i++) {
+    if(population[index_weakest].number_correct > population[i].number_correct) {
+      index_weakest = i;
+    }
+  }
+
+  //replace the worst individual with our elite individual
+  population[index_weakest].number_correct = best_individual.number_correct;
+  population[index_weakest].compression_vector = best_individual.compression_vector;
 }
 
 Individual GA::one_point_crossover(Individual parent_a, Individual parent_b) {
