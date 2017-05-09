@@ -31,9 +31,10 @@ NN::NN(double learningRate, Problem train_prob, Problem test_prob,
  Purpose: Initialize the weights of the perceptron.
  */
 void NN::initialize_weights() {
-    
+
     // create all the output nodes
-    for(int i = 0; i < num_outputs; i++) {
+    cout << endl << "THIS IS THE RANDOM NUMBER" <<  rand() << endl << endl;
+  for(int i = 0; i < num_outputs; i++) {
         
         output o;
         outputs.push_back(o);
@@ -51,16 +52,23 @@ void NN::initialize_weights() {
 }
 
 void NN::compress_maps() {
-    
-    for(int map = 0; map < num_train_inputs; map++) {
-        for(int bit = 0; bit < map_size; bit++) {
-            if(train_inputs[map][bit] == 1) {
-                
-                int symbol = compression_vector[bit];
-                compressed_train_inputs[map][symbol]++;
-            }
-        }
+  
+  for(int map = 0; map < num_train_inputs; map++) {
+    for(int bit = 0; bit < map_size; bit++) {
+      if(train_inputs[map][bit] == 1) {
+	
+	int symbol = compression_vector[bit];
+	compressed_train_inputs[map][symbol]++;
+      }
+      if(map < num_test_inputs) {
+	if(test_inputs[map][bit] == 1) {
+	  int symbol = compression_vector[bit];
+	  compressed_train_inputs[map][symbol]++;
+	}
+      }
     }
+  }
+
 }
 
 
@@ -81,8 +89,12 @@ void NN::reset() {
     for(int map = 0; map < num_train_inputs; map++) {
         for(int symbol = 0; symbol < num_symbols; symbol++) {
             compressed_train_inputs[map][symbol] = 0;
-        }
+	    if(map < num_test_inputs) {
+	      compressed_test_inputs[map][symbol] = 0;
+	    }
+	}
     }
+    
     compress_maps();
 }
 
@@ -93,11 +105,8 @@ void NN::reset() {
  */
 void NN::train() {
     
-    
-    reset();
-    
-    
-    
+  reset();
+            
     // for every epoch
     for(int i = 0; i < max_epochs; i++) {
         
@@ -249,6 +258,6 @@ double NN::test() {
         
         
     }
-
+    cout << num_correct << endl;
     return num_correct;
 }
