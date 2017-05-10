@@ -26,9 +26,9 @@ net(nnParameters.learning_rate, nnParameters.train_prob,
     this->map_size = nnParameters.train_prob.inputs.size();
     this->num_symbols = numSymbols;
     this->nn_parameters = nnParameters;
-    
+
     this->population = generate_initial_population();
-    
+
     if(selectionType == "ts" ) {
         this->selection_type = TOURNAMENT;
     } else if(selectionType == "bs") {
@@ -38,7 +38,7 @@ net(nnParameters.learning_rate, nnParameters.train_prob,
     } else {
         cout << "Selection type not recognized" << endl;
     }
-    
+
     if(crossoverType == "uc") {
         this->crossover_type = UNIFORM;
     } else if(crossoverType == "1c") {
@@ -48,21 +48,26 @@ net(nnParameters.learning_rate, nnParameters.train_prob,
     }
 }
 
-
 void GA::runGA() {
-    
     start_time = clock();
-    srand(clock());
-    
+    srand(time(NULL));
+
     Individual best_overall_individual = population[0];
     Individual best_after_update;
-    
+
     for(int i = 0; i < generations; i++) {
+      cout << "Genny " << i  << endl;
         //cout << "0" << endl;
         fitness();  // evaluate fitness of population
-        //cout << "1" << endl;
+
+	// Re-add the best individual from the last generation (only
+	// do this after there IS a "last generation)
+	if(i > 0) elitism(best_after_update);
+
+	srand(time(NULL)); // re-seed rand, because NN uses a fixed seed
         best_after_update = get_best();
-        cout << best_after_update.number_correct << endl;
+	print_individual(best_after_update);
+        cout << endl << "best " <<  best_after_update.number_correct << endl;
         //cout << "2" << endl;
         // for measuring which generation produce the best Individual
         if(best_after_update.number_correct > best_overall_individual.number_correct) {
@@ -82,10 +87,10 @@ void GA::runGA() {
                 rank_selection();
                 break;
         }
-        
+
         for(int j = 0; j < population_size-1; j++) { //size of breeding population
             Individual ind;
-            
+
             switch(crossover_type) {
                 case UNIFORM:
                     ind = uniform_crossover(breeding_population[2*j],
@@ -96,9 +101,9 @@ void GA::runGA() {
                                               breeding_population[2*j+1]);
                     break;
             }
-            
+
             population[j] = ind;
-            
+
         }//for pop
         mutation();
     }//for gen
@@ -118,10 +123,13 @@ void GA::debug_print() {
 }
 
 void GA::print_individual(Individual ind) {
-    for(int i = 1; i <= map_size; i++) {
-        cout << ind.compression_vector[i] << " ";
+  vector <int> compression_vector = ind.compression_vector;
+  for(int i = 0; i < 32; i++) {
+    for(int j = 0; j < 32; j++) {
+      cout << compression_vector[i*32 + j] << "  ";
     }
     cout << endl;
+  }
 }
 void GA::extract_and_print_answer(Individual best_individual) {
     fitness();//get final fitness update
@@ -130,7 +138,7 @@ void GA::extract_and_print_answer(Individual best_individual) {
         best_individual = ind;
         best_generation = generations;
     }
-    
+
     int num_train_inputs = nn_parameters.test_prob.inputs.size();
     cout << " Number of symbols: " << num_symbols << endl;
     cout << " Number of tests: " << nn_parameters.test_prob.inputs.size() << endl;
@@ -145,7 +153,7 @@ void GA::extract_and_print_answer(Individual best_individual) {
     cout << " Generation where best assignment was found: " << best_generation << endl;
     cout << " Time to solve: " << (end_time-start_time)/CLOCKS_PER_SEC << endl;
     cout << endl;
-    
+
 }
 
 Individual GA::get_best() {
@@ -157,9 +165,9 @@ Individual GA::get_best() {
 }
 
 vector <Individual> GA::generate_initial_population() {
-    
+
     vector<Individual> population; // to return
-    
+
     for(int i = 0; i < population_size; i++) {
         vector<int> compressionVector;
         for(int j = 0; j < map_size+1; j++) { // first bit is trash for easy indexing
@@ -176,27 +184,26 @@ vector <Individual> GA::generate_initial_population() {
 }
 
 void GA::fitness() {
-    
+
     // for every Individual in the population
     for(int i = 0; i < population_size; i++) {
-        
-        
+
+
         net.compression_vector = population[i].compression_vector;
-        
+
         net.train();
-        
+
         population[i].number_correct = net.test();
     }//for pop
 }//func
 
 
 void GA::boltzmann_selection() {
-    
     breeding_population.clear();
     vector<long double> boltzmann_weights;  //declare size equal to popultion size
     long double boltzmann_sum = 0;  // DISCRETE DISTRUBTION RANDOM GENERATOR
-    
-    
+
+
     for (int i = 0; i < population_size; ++i) {
         long double k = expl(population[i].number_correct);
         boltzmann_weights.push_back(k);
@@ -210,7 +217,7 @@ void GA::boltzmann_selection() {
         while(random_weight > 0) {
             random_weight -= boltzmann_weights[boltzmann_index];
             boltzmann_index++;
-            
+
         }
         boltzmann_index--;  //because we went one past
         breeding_population.push_back(population[boltzmann_index]);
@@ -220,12 +227,12 @@ void GA::boltzmann_selection() {
 
 void GA::tournament_selection() {
     breeding_population.clear();
-    
+
     int first_random_index;
     int second_random_index;
-    
+
     for(int i = 0; i < population_size*2; ++i) {
-        
+
         // get two random indices
         first_random_index = rand() % (population_size-1);
         second_random_index = rand() % (population_size-1);
@@ -252,7 +259,7 @@ void GA::rank_selection() {
     // sorts the population in ascending order
     sort(population.begin(), population.end(), compare_individual_satisfication);
     int gaussian_sum = population_size * (population_size + 1) / 2;
-    
+
     // weight probabilities by index from least
     for(int i = 0; i < population_size * 2; ++i) {
         int random_number;
@@ -278,14 +285,28 @@ void GA::mutation() {
     }
 }
 
+void GA::elitism(Individual best_individual) {
+  //find the weakest individual to replace with our elite individual
+  int index_weakest = 0;
+  for(int i = 0; i < population_size; i++) {
+    if(population[index_weakest].number_correct > population[i].number_correct) {
+      index_weakest = i;
+    }
+  }
+
+  //replace the worst individual with our elite individual
+  population[index_weakest].number_correct = best_individual.number_correct;
+  population[index_weakest].compression_vector = best_individual.compression_vector;
+}
+
 Individual GA::one_point_crossover(Individual parent_a, Individual parent_b) {
-    
+
     // for crossover probability
     double random_number = double(rand()) / RAND_MAX;
-    
+
     Individual new_Individual;
     new_Individual.number_correct = -1;
-    
+
     // crossover
     if(random_number < crossover_probability) {
         int random_index;
