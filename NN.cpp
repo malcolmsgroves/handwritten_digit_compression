@@ -5,51 +5,52 @@ using namespace std;
 
 // constructor with initializer list and weight initialization
 NN::NN(double learningRate, Problem train_prob, Problem test_prob,
-       int numOutputs, int maxEpochs, int numSymbols,
-       vector<int> compressionVector):
-num_train_inputs(train_prob.num_inputs),
-num_test_inputs(test_prob.num_inputs),
-num_outputs(numOutputs),
-map_size(train_prob.map_size),
-learning_rate(learningRate),
-train_inputs(train_prob.inputs),
-test_inputs(test_prob.inputs),
-train_targets(train_prob.targets),
-test_targets(test_prob.targets),
-max_epochs(maxEpochs),
-num_symbols(numSymbols),
-compression_vector(compressionVector)
+       int numOutputs, int maxEpochs, int numSymbols)
 {
-  vector<vector<int>> train_zeros (num_train_inputs,vector<int> (num_symbols));
-  this->compressed_train_inputs = train_zeros;
-  vector<vector<int>> test_zeros (num_test_inputs,vector<int> (num_symbols));
-  this->compressed_test_inputs = test_zeros;
+    this->num_train_inputs = train_prob.num_inputs;
+    this->num_test_inputs = test_prob.num_inputs;
+    this->num_outputs = numOutputs;
+    this->map_size = train_prob.map_size;
+    this->learning_rate = learningRate;
+    this->train_inputs = train_prob.inputs;
+    this->test_inputs = test_prob.inputs;
+    this->train_targets = train_prob.targets;
+    this->test_targets = test_prob.targets;
+    this->max_epochs = maxEpochs;
+    this->num_symbols = numSymbols;
+    this->compression_vector = vector<int> (numSymbols, 1);
 
-  initialize_weights();
-  compress_maps();
+    vector<vector<int>> train_zeros (num_train_inputs,vector<int> (num_symbols, 0));
+    this->compressed_train_inputs = train_zeros;
+    vector<vector<int>> test_zeros (num_test_inputs,vector<int> (num_symbols, 0));
+    this->compressed_test_inputs = test_zeros;
+
 }
 
 /*
  Purpose: Initialize the weights of the perceptron.
  */
 void NN::initialize_weights() {
+  srand(12345); // make the initial weights the same every time
 
-    // create all the output nodes
-    for(int i = 0; i < num_outputs; i++) {
+  // create all the output nodes
+
+  for(int i = 0; i < num_outputs; i++) {
 
         output o;
         outputs.push_back(o);
-        for(int j = 0; j < map_size; j++) {
+        for(int j = 0; j < num_symbols; j++) {
 
             // determined that a [-0.15, 0.15] random range
             // worked well in project 4
-            outputs[i].weights.push_back(0.3*double(rand())/double(RAND_MAX) - 0.15);
-
+	  outputs[i].weights.push_back(0.3*double(rand())/double(RAND_MAX) - 0.15);
         }
 
         // add a bias node
         outputs[i].weights.push_back(1);
     }
+
+  srand(time(NULL)); // re-randomize rand()
 }
 
 void NN::compress_maps() {
@@ -57,25 +58,48 @@ void NN::compress_maps() {
   for(int map = 0; map < num_train_inputs; map++) {
     for(int bit = 0; bit < map_size; bit++) {
       if(train_inputs[map][bit] == 1) {
+
 	int symbol = compression_vector[bit];
 	compressed_train_inputs[map][symbol]++;
       }
+      if(map < num_test_inputs) {
+	if(test_inputs[map][bit] == 1) {
+	  int symbol = compression_vector[bit];
+	  compressed_test_inputs[map][symbol]++;
+	}
+      }
     }
   }
+  //for(int i = 0; i < map_size; i ++) {
+    //cout <<
 }
+
+
 
 
 /*
- Purpose:    Clears the outputs and weights.
- Mostly for debugging.
+ Purpose:   Reset the NN by clearing the weights
+ and reinitializing them so it can be
+ trained again.
  */
-void NN::clear() {
-    for(int i = 0; i < num_outputs; i++) {
-        outputs.clear();
+
+void NN::reset() {
+
+    outputs.clear();
+
+    initialize_weights();
+
+    for(int map = 0; map < num_train_inputs; map++) {
+        for(int symbol = 0; symbol < num_symbols; symbol++) {
+            compressed_train_inputs[map][symbol] = 0;
+	    if(map < num_test_inputs) {
+	      compressed_test_inputs[map][symbol] = 0;
+	    }
+	}
     }
 
+    compress_maps();
 }
-
 
 /*
  Purpose: Train the perceptron, update the weights
@@ -84,7 +108,7 @@ void NN::clear() {
  */
 void NN::train() {
 
-    vector<double> percent_correct;
+  reset();
 
     // for every epoch
     for(int i = 0; i < max_epochs; i++) {
@@ -99,9 +123,10 @@ void NN::train() {
 
                 double dot_product = 0;
 
-                for(int weight_index = 0; weight_index <= map_size; weight_index++) {
-                    if(weight_index < map_size) {
-                        dot_product += train_inputs[input][weight_index]*outputs[output].weights[weight_index];
+
+                for(int weight_index = 0; weight_index <= num_symbols; weight_index++) {
+                    if(weight_index < num_symbols) {
+                        dot_product += compressed_train_inputs[input][weight_index]*outputs[output].weights[weight_index];
                     }
                     else {
                         // bias node
@@ -110,13 +135,14 @@ void NN::train() {
                     }
                 } // every node weight
 
+
+
                 // calculate activation function and derivative
                 double g = activation_function(dot_product);
                 double g_prime = ddx_activation_function(dot_product);
 
                 // update weights
                 update_weights(output, input, g, g_prime, target);
-
 
             }
         } // every training input
@@ -144,10 +170,10 @@ void NN::update_weights(int output_index, int input_index, double g, double g_pr
     }
 
     // update every weight on output node
-    for(int i = 0; i < map_size+1; i++) {
+    for(int i = 0; i < num_symbols+1; i++) {
         if(i < map_size) {
             // update function
-            outputs[output_index].weights[i] += learning_rate * (target - g) * g_prime * train_inputs[input_index][i];
+            outputs[output_index].weights[i] += learning_rate * (target - g) * g_prime * compressed_train_inputs[input_index][i];
         }
         else {
             // bias node
@@ -157,25 +183,25 @@ void NN::update_weights(int output_index, int input_index, double g, double g_pr
 }
 
 /*
-    Purpose:    Zigmoid activation function for perceptron.
-    Return:     Function value.
+ Purpose:    Zigmoid activation function for perceptron.
+ Return:     Function value.
  */
 double NN::activation_function(double x) {
     return 1/(1+exp(.5-x));
 }
 
 /*
-    Purpose:   Derivative of zigmoid activation function
-            for perceptron.
-    Return:    Function derivative.
+ Purpose:   Derivative of zigmoid activation function
+ for perceptron.
+ Return:    Function derivative.
  */
 double NN::ddx_activation_function(double x) {
     return (1.64872 * exp(x)) / pow((1.64872 + exp(x)), 2);
 }
 
 /*
-    Purpose:    Test the perceptron on the test inputs
-    Return:     Percent of correct test problems.
+ Purpose:    Test the perceptron on the test inputs
+ Return:     Percent of correct test problems.
  */
 double NN::test() {
 
@@ -195,11 +221,11 @@ double NN::test() {
             double dot_product = 0;
 
             // for every weight connected to the output
-            for(int weight_index = 0; weight_index <= map_size; weight_index++) {
+            for(int weight_index = 0; weight_index <= num_symbols; weight_index++) {
 
                 // real inputs
-                if(weight_index < map_size) {
-                    dot_product += test_inputs[input][weight_index]*outputs[output].weights[weight_index];
+                if(weight_index < num_symbols) {
+                    dot_product += compressed_test_inputs[input][weight_index]*outputs[output].weights[weight_index];
                 }
                 //bias node
                 else {
@@ -235,6 +261,6 @@ double NN::test() {
 
 
     }
-    cout << "inputs " << num_test_inputs << endl;
+    //    cout << num_correct << endl;
     return num_correct;
 }

@@ -22,10 +22,16 @@ struct NN_Parameters {
     int max_epochs;
 };
 
-enum SelectionType {TOURNAMENT, RANK, BOLTZMANN};
-enum CrossoverType {UNIFORM, ONEPOINT};
+struct Result {
+    vector<int> num_correct;
+    vector<int> best_compression_vector;
+    double run_time;
+};
 
-class GA {
+enum SelectionType {TOURNAMENT, RANK, BOLTZMANN};
+enum CrossoverType {UNIFORM, ONEPOINT, NPOINT};
+
+class GA  {
 
 public:
     GA(int populationSize,
@@ -34,35 +40,39 @@ public:
        double crossoverProbability,
        double mutationProbability,
        int generationNumber,
-       NN_Parameters nnParameters,
-       int numSymbols);
-    
-    void runGA();
-    
+       int numSymbols,
+       NN_Parameters nnParameters);
+
+    Result runGA();
+
 private:
-    
-    vector <vector <int> > clauses;
+
+
     vector <Individual> population;
     vector <Individual> breeding_population;
     double crossover_probability, mutation_probability, start_time, end_time;
-    int generations, population_size, num_clauses;
-    int num_variables, best_generation, num_symbols, map_size;
+    int generations, population_size, best_generation, num_symbols, map_size,
+      crossover_points;
     CrossoverType crossover_type;
     SelectionType selection_type;
     NN_Parameters nn_parameters;
-    
+
     void fitness();
-    
+
     void boltzmann_selection();
     void tournament_selection();
     void rank_selection();
     vector<Individual> generate_initial_population();
     void mutation();
+    void elitism(Individual best_individual);
     Individual one_point_crossover(Individual parent_a, Individual parent_b);
+    Individual n_point_crossover(int points,
+				 Individual parent_a, Individual parent_b);
     Individual uniform_crossover(Individual parent_a, Individual parent_b);
     void extract_and_print_answer(Individual best_individual);
     Individual get_best();
-    void debug_print();
-    void print_Individual(Individual ind);
+    //    void debug_print();
+    void print_individual(Individual ind);
+    NN net;
 };
 #endif
