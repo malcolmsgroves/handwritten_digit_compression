@@ -3,51 +3,19 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-<<<<<<< HEAD
-  if(argc != 8) {
-    cout << "ERROR: Missing required parameters \n"
-	 << "population_size\n"
-	 << "selection_type\n"
-	 << "crossover_type\n"
-	 << "crossover_probability\n"
-	 << "mutation_probability\n"
-	 << "num_generations\n"
-	 << "num_symbols"
-	 << endl;
-    exit(1);
-  }
-
-  int population_size = stoi(argv[1]);
-  string selection_type = argv[2];
-  string crossover_type = argv[3];
-  double crossover_probability = stod(argv[4]);
-  double mutation_probability = stod(argv[5]);
-  int num_generations = stoi(argv[6]);
-  int num_symbols = stoi(argv[7]);
-
-  Problem train = read_file("optdigits-32x32.tra");
-  Problem test = read_file("optdigits-32x32.tes");
-
-
-  NN_Parameters nn_params;
-  nn_params.learning_rate = .1;
-  nn_params.train_prob = train;
-  nn_params.test_prob = test;
-  nn_params.num_outputs = 10;
-  nn_params.max_epochs = 10;
-
-
-
-  GA rat_king(population_size, selection_type, crossover_type,
-	      crossover_probability, mutation_probability,
-	      num_generations, num_symbols, nn_params);
-
-  rat_king.runGA();
-
-  return 0;
-
-=======
     
+    if(argc != 8) {
+        cout << "ERROR: Missing required parameters \n"
+        << "population_size\n"
+        << "selection_type\n"
+        << "crossover_type\n"
+        << "crossover_probability\n"
+        << "mutation_probability\n"
+        << "num_generations\n"
+        << "num_symbols"
+        << endl;
+        exit(1);
+    }
     
     
     int population_size = stoi(argv[1]);
@@ -106,8 +74,8 @@ int main(int argc, char** argv) {
                 
                 for(int gen = 0; gen < results.num_correct.size(); ++gen) {
                     output_string += to_string(gen) + "," + to_string(num_symbols) + "," +
-                        to_string(mutation_probability) + "," + to_string(results.num_correct[gen]) +
-                        "," + to_string(results.run_time) + "\n";
+                    to_string(mutation_probability) + "," + to_string(results.num_correct[gen]) +
+                    "," + to_string(results.run_time) + "\n";
                 }
             }
         }
@@ -119,16 +87,11 @@ int main(int argc, char** argv) {
     }
     return 0;
     
->>>>>>> c9df0c82dc2f39b0ff524d4e27146292d9a5495c
 }
 
 // reads in sets of digit recognition problems from files
 Problem read_file(string problem_file_name) {
-<<<<<<< HEAD
-=======
     
-    
->>>>>>> c9df0c82dc2f39b0ff524d4e27146292d9a5495c
     Problem digit_recognition;
     digit_recognition.map_size = 0;
     digit_recognition.num_inputs = 0;
