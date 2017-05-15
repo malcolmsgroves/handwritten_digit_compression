@@ -63,11 +63,17 @@ Result GA::runGA() {
     start_time = clock();
     srand(time(NULL));
     
+    int streak = 0;
+    double og_mutation = mutation_probability;
+    
     Individual best_overall_individual = population[0];
     Individual best_after_update;
     
     for(int i = 0; i < generations; i++) {
         fitness();  // evaluate fitness of population
+        
+        ++streak;
+        mutation_probability = 0.9 * (mutation_probability - og_mutation) + og_mutation;
         
         // Re-add the best individual from the last generation (only
         // do this after there IS a "last generation)
@@ -85,6 +91,7 @@ Result GA::runGA() {
         if(best_after_update.number_correct > best_overall_individual.number_correct) {
             best_overall_individual = best_after_update;
             best_generation = i+1;
+            streak = 0;
         }
         //cout << "3" << endl;
         // perform selection
@@ -121,6 +128,9 @@ Result GA::runGA() {
             population[j] = ind;
             
         }//for pop
+        if(streak > 5) {
+            mutation_probability = og_mutation * 3;
+        }
         mutation();
         results.num_correct.push_back(best_overall_individual.number_correct);
     }//for gen
