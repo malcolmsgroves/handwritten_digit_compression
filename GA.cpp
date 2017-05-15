@@ -73,7 +73,7 @@ Result GA::runGA() {
         fitness();  // evaluate fitness of population
         
         ++streak;
-        mutation_probability = 0.9 * (mutation_probability - og_mutation) + og_mutation;
+        mutation_probability = 0.5 * (mutation_probability - og_mutation) + og_mutation;
         
         // Re-add the best individual from the last generation (only
         // do this after there IS a "last generation)
@@ -129,7 +129,7 @@ Result GA::runGA() {
             
         }//for pop
         if(streak > 5) {
-            mutation_probability = og_mutation * 3;
+            mutation_probability = og_mutation * 8;
         }
         mutation();
         results.num_correct.push_back(best_overall_individual.number_correct);
