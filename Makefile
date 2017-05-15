@@ -1,5 +1,5 @@
 CC = g++ -g
-CFLAGS = -std=c++11 -Wall
+CFLAGS = -std=c++11 -Wall -Wno-sign-compare
 
 RK : main.o ga.o nn.o
 	$(CC) -o $@ main.o ga.o nn.o
@@ -16,4 +16,3 @@ nn.o : NN.cpp NN.h
 clean:
 	rm *.o
 	rm RK
-

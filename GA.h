@@ -29,7 +29,7 @@ struct Result {
 };
 
 enum SelectionType {TOURNAMENT, RANK, BOLTZMANN};
-enum CrossoverType {UNIFORM, ONEPOINT};
+enum CrossoverType {UNIFORM, ONEPOINT, NPOINT};
 
 class GA  {
 
@@ -51,8 +51,8 @@ private:
     vector <Individual> population;
     vector <Individual> breeding_population;
     double crossover_probability, mutation_probability, start_time, end_time;
-    int generations, population_size;
-    int best_generation, num_symbols, map_size;
+    int generations, population_size, best_generation, num_symbols, map_size,
+      crossover_points;
     CrossoverType crossover_type;
     SelectionType selection_type;
     NN_Parameters nn_parameters;
@@ -66,10 +66,12 @@ private:
     void mutation();
     void elitism(Individual best_individual);
     Individual one_point_crossover(Individual parent_a, Individual parent_b);
+    Individual n_point_crossover(int points,
+				 Individual parent_a, Individual parent_b);
     Individual uniform_crossover(Individual parent_a, Individual parent_b);
     void extract_and_print_answer(Individual best_individual);
     Individual get_best();
-    void debug_print();
+    //    void debug_print();
     void print_individual(Individual ind);
     NN net;
 };
