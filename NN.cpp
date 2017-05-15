@@ -49,6 +49,8 @@ void NN::initialize_weights() {
         // add a bias node
         outputs[i].weights.push_back(1);
     }
+
+  srand(time(NULL)); // re-randomize rand()
 }
 
 void NN::compress_maps() {

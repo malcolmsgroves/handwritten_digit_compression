@@ -3,8 +3,18 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-  
-
+  if(argc != 8) {
+    cout << "ERROR: Missing required parameters \n"
+	 << "population_size\n"
+	 << "selection_type\n"
+	 << "crossover_type\n"
+	 << "crossover_probability\n"
+	 << "mutation_probability\n"
+	 << "num_generations\n"
+	 << "num_symbols"
+	 << endl;
+    exit(1);
+  }
 
   int population_size = stoi(argv[1]);
   string selection_type = argv[2];
@@ -39,8 +49,6 @@ int main(int argc, char** argv) {
 
 // reads in sets of digit recognition problems from files
 Problem read_file(string problem_file_name) {
-
-
     Problem digit_recognition;
     digit_recognition.map_size = 0;
     digit_recognition.num_inputs = 0;
