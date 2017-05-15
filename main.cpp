@@ -29,6 +29,7 @@ int main(int argc, char** argv) {
     cout << "Run all the tests? (y/n)" << endl;
     cin >> run_command;
     
+    
     Result results;
     
     if(run_command == "n") {

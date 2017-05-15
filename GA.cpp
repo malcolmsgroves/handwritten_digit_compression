@@ -65,9 +65,8 @@ Result GA::runGA() {
         
         srand(time(NULL)); // re-seed rand, because NN uses a fixed seed
         best_after_update = get_best();
-        print_individual(best_after_update);
-        cout << endl << "best " <<  best_after_update.number_correct << endl;
-        //cout << "2" << endl;
+        //print_individual(best_after_update);
+        
         // for measuring which generation produce the best Individual
         if(best_after_update.number_correct > best_overall_individual.number_correct) {
             best_overall_individual = best_after_update;
@@ -108,7 +107,7 @@ Result GA::runGA() {
         results.num_correct.push_back(best_overall_individual.number_correct);
     }//for gen
     end_time = clock();
-    extract_and_print_answer(best_overall_individual);
+    //extract_and_print_answer(best_overall_individual);
     results.run_time = (end_time-start_time)/CLOCKS_PER_SEC;
     results.best_compression_vector = best_overall_individual.compression_vector;
     return results;
