@@ -157,7 +157,7 @@ void GA::print_individual(Individual ind) {
     vector <int> compression_vector = ind.compression_vector;
     for(int i = 0; i < 32; i++) {
         for(int j = 0; j < 32; j++) {
-            cout << compression_vector[i*32 + j] << "  ";
+            cout << compression_vector[i*32 + j] << "\t";
         }
         cout << endl;
     }

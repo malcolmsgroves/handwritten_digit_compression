@@ -60,24 +60,24 @@ int main(int argc, char** argv) {
         
         string output_string = "Rat King\ngeneration,num_symbols,mutation_probability,num_correct,run_time\n";
         
-        vector<double> symbol_vector {10, 20, 40, 80, 120};
-        vector<double> mutation_vector {0.01, 0.015, 0.02, 0.05};
+        vector<double> symbol_vector {8, 16, 32, 64};
+        
         for(int i = 0; i < symbol_vector.size(); ++i) {
             num_symbols = symbol_vector[i];
-            for(int j = 0; j < mutation_vector.size(); ++j) {
-                mutation_probability = mutation_vector[j];
-                GA rat_king(population_size, selection_type, crossover_type,
-                            crossover_probability, mutation_probability,
-                            num_generations, num_symbols, nn_params);
-                
-                results = rat_king.runGA();
-                
-                for(int gen = 0; gen < results.num_correct.size(); ++gen) {
-                    output_string += to_string(gen) + "," + to_string(num_symbols) + "," +
-                    to_string(mutation_probability) + "," + to_string(results.num_correct[gen]) +
-                    "," + to_string(results.run_time) + "\n";
-                }
+            
+            
+            GA rat_king(population_size, selection_type, crossover_type,
+                        crossover_probability, mutation_probability,
+                        num_generations, num_symbols, nn_params);
+            
+            results = rat_king.runGA();
+            
+            for(int gen = 0; gen < results.num_correct.size(); ++gen) {
+                output_string += to_string(gen) + "," + to_string(num_symbols) + "," +
+                to_string(mutation_probability) + "," + to_string(results.num_correct[gen]) +
+                "," + to_string(results.run_time) + "\n";
             }
+            
         }
         
         output_file.open(nn_filename);
