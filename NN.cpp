@@ -261,6 +261,6 @@ double NN::test() {
 
 
     }
-    cout << num_correct << endl;
+    //    cout << num_correct << endl;
     return num_correct;
 }

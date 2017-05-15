@@ -22,6 +22,12 @@ struct NN_Parameters {
     int max_epochs;
 };
 
+struct Result {
+    vector<int> num_correct;
+    vector<int> best_compression_vector;
+    double run_time;
+};
+
 enum SelectionType {TOURNAMENT, RANK, BOLTZMANN};
 enum CrossoverType {UNIFORM, ONEPOINT, NPOINT};
 
@@ -37,7 +43,7 @@ public:
        int numSymbols,
        NN_Parameters nnParameters);
 
-    void runGA();
+    Result runGA();
 
 private:
 
