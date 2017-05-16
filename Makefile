@@ -1,4 +1,4 @@
-CC = g++ -g
+CC = g++ -O3
 CFLAGS = -std=c++11 -Wall -Wno-sign-compare
 
 RK : main.o ga.o nn.o
