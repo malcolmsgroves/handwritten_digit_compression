@@ -12,14 +12,20 @@ Population:
   
 Selection Type:
   <String>
+  
   "bs" - Botlzmann Selection
+  
   "ts" - Tournament Selection
+  
   "rs" - Rank Selection // This is the best one
   
 Crossover Type:
   <String>
+  
   "uc" - Uniform Crossover
+  
   "1c" - 1-Point Crossover
+  
   "nc30" - 30-Point Crossover // Replace '30' with any positive integer for any N-Point crossover
   
 Crossover Probability:
