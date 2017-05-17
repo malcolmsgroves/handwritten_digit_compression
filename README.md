@@ -7,11 +7,12 @@ After making the project, run
 
 with the following parameters, in this order:
 
-Population:
-  <Positive integer>
+__Population:__
+  [Positive integer]
+  
   
-Selection Type:
-  <String>
+__Selection Type:__
+  [String]
   
   "bs" - Botlzmann Selection
   
@@ -19,8 +20,9 @@ Selection Type:
   
   "rs" - Rank Selection // This is the best one
   
-Crossover Type:
-  <String>
+  
+__Crossover Type:__
+  [String]
   
   "uc" - Uniform Crossover
   
@@ -28,17 +30,22 @@ Crossover Type:
   
   "nc30" - 30-Point Crossover // Replace '30' with any positive integer for any N-Point crossover
   
-Crossover Probability:
-  <Double, between 0 and 1>
   
-Mutation Probability:
-  <Double, between 0 and 1>
+__Crossover Probability:__
+  [Double, between 0 and 1]
   
-Number of Generations/Iterations:
-  <Positive integer>
   
-Number of Symbols:
-  <Positive integer>
+__Mutation Probability:__
+  [Double, between 0 and 1]
+  
+  
+__Number of Generations/Iterations:__
+  [Positive integer]
+  
+  
+__Number of Symbols:__
+  [Positive integer]
+  
   
 Example command, pretty good results:
 
