@@ -1,5 +1,5 @@
 # Handwritten Digit Compression
-Final Project for NIC: GA / Perceptron hybrid for image compression and digit recognition.
+Final Project for NIC: GA / Perceptron hybrid for image compression and digit recognition. The program uses a genetic algorithm to break the handwritten digit bitmaps into regions. A perceptron is then trained with the sum of bits in each region as the input. Finally, the perceptron is tested on a test image set.
 
 After making the project, run
 
