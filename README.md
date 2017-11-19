@@ -1,6 +1,8 @@
 # Handwritten Digit Compression
 *Final Project for NIC*
 
+See the attached report pdf for further details and results.
+
 Genetic Algorithm (GA) / Neural Network hybrid for image compression and optical digit recognition. The program uses a genetic algorithm to assign integer symbols to each bit of an image. A perceptron is then trained with the sum of bits of each symbol as the input using a training image set. Finally, the perceptron is tested on a test image set.
 
 ## Running
@@ -50,7 +52,7 @@ __Number of Symbols:__
   
 Example command, pretty good results:
 
-./RK 100 rs uc .5 .01 200 32
+```./RK 100 rs uc .5 .01 200 32```
 
 
 ## Results
