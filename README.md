@@ -6,11 +6,7 @@ Genetic Algorithm (GA) / Neural Network hybrid for image compression and optical
 ## Running
 First ```make``` the project
 
-Then run
-
-> ./RK
-
-with the following parameters, in this order:
+Then run ```./RK``` with the following parameters, in this order:
 
 __Population:__
   [Positive integer]
